@@ -21,3 +21,4 @@ venv.bak/
 #custom
 .idea/
 logs/
+db_info.json

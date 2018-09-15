@@ -156,8 +156,9 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
+          <entry key="gitignore" value="15" />
           <entry key="json" value="83" />
-          <entry key="py" value="2826" />
+          <entry key="py" value="2947" />
           <entry key="regexp" value="1" />
           <entry key="tmpl" value="97" />
         </counts>
@@ -165,13 +166,14 @@
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="JSON" value="83" />
-          <entry key="PLAIN_TEXT" value="97" />
-          <entry key="Python" value="2826" />
+          <entry key="PLAIN_TEXT" value="112" />
+          <entry key="Python" value="2947" />
           <entry key="RegExp" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
+          <entry key="gitignore" value="1" />
           <entry key="json" value="1" />
           <entry key="py" value="16" />
           <entry key="tmpl" value="1" />
@@ -180,7 +182,7 @@
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="JSON" value="1" />
-          <entry key="PLAIN_TEXT" value="1" />
+          <entry key="PLAIN_TEXT" value="2" />
           <entry key="Python" value="16" />
         </counts>
       </usages-collector>
@@ -197,14 +199,23 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/work/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="456">
-              <caret line="93" column="39" lean-forward="true" selection-start-line="93" selection-start-column="39" selection-end-line="93" selection-end-column="39" />
+            <state relative-caret-position="114">
+              <caret line="6" column="34" selection-start-line="6" selection-start-column="34" selection-end-line="6" selection-end-column="34" />
               <folding>
                 <element signature="e#25#49#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="437">
+              <caret line="23" column="12" selection-start-line="23" selection-start-column="12" selection-end-line="23" selection-end-column="12" />
             </state>
           </provider>
         </entry>
@@ -213,7 +224,7 @@
         <entry file="file://$PROJECT_DIR$/work/db_info.json">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="57">
-              <caret line="3" column="26" lean-forward="true" selection-start-line="3" selection-start-column="26" selection-end-line="3" selection-end-column="26" />
+              <caret line="3" column="26" selection-start-line="3" selection-start-column="26" selection-end-line="3" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -246,7 +257,7 @@
               <caret line="46" column="72" selection-start-line="46" selection-start-column="72" selection-end-line="46" selection-end-column="72" />
               <folding>
                 <element signature="e#24#37#0" expanded="true" />
-                <marker date="1536652181949" expanded="true" signature="1352:1868" ph="..." />
+                <marker date="1536976820330" expanded="true" signature="1352:1868" ph="..." />
               </folding>
             </state>
           </provider>
@@ -329,6 +340,7 @@
         <option value="$PROJECT_DIR$/work/spiders/year_2018/month_9/date_13/a1906_framesfootwear.py" />
         <option value="$PROJECT_DIR$/work/db_info.json" />
         <option value="$PROJECT_DIR$/work/settings.py" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -608,7 +620,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../lib/python3.5/site-packages/scrapy_splash/cookies.py" />
     <entry file="file:///usr/lib/python3.5/argparse.py" />
     <entry file="file://$PROJECT_DIR$/../lib/python3.5/site-packages/selenium/webdriver/support/expected_conditions.py" />
     <entry file="file://$PROJECT_DIR$/../lib/python3.5/site-packages/selenium/webdriver/remote/webdriver.py" />
@@ -796,7 +807,7 @@
           <caret line="46" column="72" selection-start-line="46" selection-start-column="72" selection-end-line="46" selection-end-column="72" />
           <folding>
             <element signature="e#24#37#0" expanded="true" />
-            <marker date="1536652181949" expanded="true" signature="1352:1868" ph="..." />
+            <marker date="1536976820330" expanded="true" signature="1352:1868" ph="..." />
           </folding>
         </state>
       </provider>
@@ -818,7 +829,7 @@
     <entry file="file://$PROJECT_DIR$/work/db_info.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="57">
-          <caret line="3" column="26" lean-forward="true" selection-start-line="3" selection-start-column="26" selection-end-line="3" selection-end-column="26" />
+          <caret line="3" column="26" selection-start-line="3" selection-start-column="26" selection-end-line="3" selection-end-column="26" />
         </state>
       </provider>
     </entry>
@@ -831,11 +842,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/work/settings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="456">
-          <caret line="93" column="39" lean-forward="true" selection-start-line="93" selection-start-column="39" selection-end-line="93" selection-end-column="39" />
+        <state relative-caret-position="114">
+          <caret line="6" column="34" selection-start-line="6" selection-start-column="34" selection-end-line="6" selection-end-column="34" />
           <folding>
             <element signature="e#25#49#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="437">
+          <caret line="23" column="12" selection-start-line="23" selection-start-column="12" selection-end-line="23" selection-end-column="12" />
         </state>
       </provider>
     </entry>
