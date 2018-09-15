@@ -1,0 +1,77 @@
+# -*- coding: utf-8 -*-
+import scrapy
+from scrapy.http import Request
+from scrapy_splash import SplashRequest
+from work.items import ShopItem
+import re
+
+
+class $classname(scrapy.Spider):
+    name = '$name'
+    allowed_domains = ['$domain']
+    start_urls = ['https://$domain/']
+
+    custom_settings = {
+        'MYSQL_TABLE': 'data_content_',
+        'ITEM_PIPELINES': {}
+    }
+
+    def parse(self, response):
+        nav_level_1_list = response.xpath('')
+
+        for nav_level_1 in nav_level_1_list:
+            cat1 = nav_level_1.xpath('').get().strip()
+            nav_level_2_list = nav_level_1.xpath('')
+
+            for nav_level_2 in nav_level_2_list:
+                cat2 = nav_level_2.xpath('').get().strip()
+                nav_level_3_list = nav_level_2.xpath('')
+
+                for nav_level_3 in nav_level_3_list:
+                    cat3 = nav_level_3.xpath('').get().strip()
+                    nav_level_3_url = nav_level_3.xpath('').get()
+
+                    print(f'{cat1}---{cat2}---{cat3}')
+
+                    meta = {'cat1': cat1, 'cat2': cat2, 'cat3': cat3}
+
+                    yield Request(response.urljoin(nav_level_3_url), self.parse_product_url, meta=meta)
+
+    def parse_product_url(self, response):
+        product_list = response.xpath('')
+
+        for product in product_list:
+            product_url = product.xpath('').get()
+
+            yield Request(response.urljoin(product_url), self.parse_product_info, meta=response.meta)
+
+        next_page = response.xpath('').get()
+
+        if next_page is not None:
+            yield Request(response.urljoin(next_page), self.parse_product_url, meta=response.meta)
+
+    def parse_product_info(self, response):
+        item = ShopItem()
+
+        item['PageUrl'] = response.url
+        item['cat1'] = response.meta['cat1']
+        item['cat2'] = response.meta['cat2']
+        item['cat3'] = response.meta['cat3']
+
+        item['brand'] = response.xpath('').get().strip()
+        item['gender'] = item['cat1']
+        item['producttype'] = item['cat2']
+
+        item['title'] = response.xpath('').get()
+        item['price'] = response.xpath('').get()
+        item['short_content'] = ''
+        item['content'] = response.xpath('').get()
+
+        pictures = response.xpath('').getall()
+        picture = response.xpath('').getall()
+        item['pictures'] = pictures or picture
+
+        item['color'] = ''
+        item['size'] = response.xpath('').getall()
+
+        yield item
