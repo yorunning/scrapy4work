@@ -6,65 +6,73 @@ from scrapy_selenium import SeleniumRequest
 
 
 class HuffashionsSpider(scrapy.Spider):
+    """
+    主要用于测试scrapy框架的整合
+    """
     name = 'huffashions'
     allowed_domains = ['www.huffashions.com']
-    start_urls = ['http://www.huffashions.com/apparel-wholesale']
+    start_urls = ['http://www.huffashions.com/']
     custom_settings = {
-        'MYSQL_TABLE': 'huffashions_table'
+        'MYSQL_TABLE': 'huffashions_table',
+        'ITEM_PIPELINES': {}
     }
 
     def parse(self, response):
-        """
-        解析一级导航链接
-        :param response:
-        :return:
-        """
-        nav_list = response.xpath('//ul[@id="left-navp"]//ul[@class="level0"]/li')
+        nav_level_1_list = response.xpath('//ol[@class="nav-primary"]/li')
 
-        for link in nav_list:
-            url = link.xpath('./a/@href').extract_first()
+        for nav_level_1 in nav_level_1_list:
+            cat1 = nav_level_1.xpath('./a/text()').get()
+            nav_level_2_list = nav_level_1.xpath('./ul/li')[1:]
 
-            # yield Request(url, callback=self.parse_link_list2)
-            yield SeleniumRequest(url=url, callback=self.parse_product_list)
+            for nav_level_2 in nav_level_2_list:
+                cat2 = nav_level_2.xpath('./a/text()').get()
+                nav_level_2_url = nav_level_2.xpath('./@href').get()
 
-    def parse_product_list(self, response):
-        """
-        解析商品列表链接
-        :param response:
-        :return:
-        """
-        cat1 = response.xpath('//div[@class="breadcrumbs"]/ul/li[2]/a/text()').extract_first()
-        cat2 = response.xpath('//div[@class="breadcrumbs"]/ul/li[3]/strong/text()').extract_first()
+                print(f'{cat1}---{cat2}')
 
+                meta = {
+                    'cat1': cat1,
+                    'cat2': cat2
+                }
+
+                yield Request(response.urljoin(nav_level_2_url), self.parse_product_url, meta=meta)
+
+    def parse_product_url(self, response):
         product_list = response.xpath('//li[@class="item last"]')
 
-        for link in product_list:
-            url = link.xpath('./a/@href').extract_first()
+        for product in product_list:
+            product_url = product.xpath('./a/@href').get()
+            yield Request(response.urljoin(product_url), self.parse_product_info, meta=response.meta)
 
-            yield SeleniumRequest(url=url, callback=self.parse_item, meta={'cat1': cat1, 'cat2': cat2})
+        next_page = response.xpath('//a[@class="next i-next"]/@href').get()
 
-    def parse_item(self, response):
-        """
-        解析商品信息
-        :param response:
-        :return:
-        """
+        if next_page is not None:
+            yield Request(response.urljoin(next_page), self.parse_product_url, meta=response.meta)
+
+    def parse_product_info(self, response):
         item = ShopItem()
 
-        item['url'] = response.url
+        item['PageUrl'] = response.url
+        item['cat1'] = response.meta['cat1']
+        item['cat2'] = response.meta['cat2']
+
         item['brand'] = 'Huf'
-        item['gender'] = ''
-        item['producttype'] = response.meta['cat1']
-        item['category'] = item['brand'] + '|||' + item['producttype'] + '|||' + response.meta['cat2']
+        item['gender'] = 'Men'
+        item['producttype'] = item['cat1']
 
         item['title'] = response.xpath('//span[@class="h1"]/text()').get()
-        item['price'] = response.xpath('//div[@class="price-info"]//span[@class="price"]/text()')[
-            1].get()
-        item['short_content'] = response.xpath('//div[@class="std"]/node()')[-1].get().strip() or ''
-        item['content'] = ''
-        item['picture'] = '|||'.join(response.xpath('//div[@class="product-image-gallery"]/img/@src')[1:].getall())
-        item['yanse'] = response.xpath('//div[@class="input-box"]')[1].xpath('.//option[2]/text()').get().strip()
-        item['size'] = '|||'.join(
-            [i.strip() for i in response.xpath('//div[@class="input-box"]')[2].xpath('.//option/text()')[1:].getall()])
+        item['price'] = response.xpath('//div[@class="price-box"]/p[last()]/span[@class="price"]/text()').get()
+
+        item['short_content'] = ''
+        item['content'] = response.xpath('//div[@class="std"]').get()
+
+        pictures = response.xpath('//img[@class="gallery-image"]/@src').getall()
+        item['pictures'] = pictures
+
+        item['color'] = response.xpath(
+            '//label[@class="required"][contains(text(),"Color")]/following::select[1]/option/text()')[1:].getall()
+
+        item['size'] = response.xpath(
+            '//label[@class="required"][contains(text(),"Size")]/following::select[1]/option/text()')[1:].getall()
 
         yield item

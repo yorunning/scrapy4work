@@ -5,9 +5,10 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import pymysql
+import aiomysql
 
 
-class MysqlPipeline(object):
+class MysqlPipeline:
 
     def __init__(self, host, user, password, database, table):
         self.host = host
@@ -47,3 +48,7 @@ class MysqlPipeline(object):
         self.db.commit()
 
         return item
+
+
+class AioMysqlPipeline:
+    pass

@@ -7,6 +7,7 @@
 
 from scrapy import signals
 from scrapy.http import HtmlResponse
+from scrapy_splash import SplashRequest
 
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
@@ -14,7 +15,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 from work.items import ShopItem
 import random
 import re
-from scrapy_splash import SplashRequest
 
 
 class TutorialSpiderMiddleware(object):
@@ -148,13 +148,21 @@ class ProxyMiddleware:
     设置代理
     """
 
+    def __init__(self, proxy):
+        self.proxy = proxy
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        s = cls(crawler.settings.get('PROXY'))
+        return s
+
     def process_request(self, request, spider):
         if isinstance(request, SplashRequest):
             # SplashRequest
-            request.meta['splash']['args']['proxy'] = 'http://10.0.0.59:1080'
+            request.meta['splash']['args']['proxy'] = f'http://{self.proxy}'
         else:
             # scrapy Request and SeleniumRequest
-            request.meta['proxy'] = 'http://127.0.0.1:1080'
+            request.meta['proxy'] = f'http://{self.proxy}'
 
 
 class CommonFilterMiddleware:
@@ -170,25 +178,30 @@ class CommonFilterMiddleware:
             else:
                 item = r.copy()
 
+                item['cat1'] = r['cat1'].strip()
+
                 # 拼接category
-                if item.get('cat4', False):
+                if r.get('cat4', False):
                     item['category'] = '|||'.join((r['cat1'], r['cat2'], r['cat3'], r['cat4']))
-                elif item.get('cat3', False):
+                elif r.get('cat3', False):
                     item['category'] = '|||'.join((r['cat1'], r['cat2'], r['cat3']))
                 else:
                     item['category'] = '|||'.join((r['cat1'], r['cat2']))
 
-                # 去头部尾部空格、join list
+                # 去头部尾部空格及特殊字符
                 item['title'] = r['title'].strip()
                 item['price'] = r['price'].strip().strip('$').strip('£').strip('€')
-                item['short_content'] = r['short_content'].strip() if r['short_content'] is not None else ''
-                item['content'] = r['content'].strip() if r['content'] is not None else ''
 
+                # 如果没有匹配到描述设为''
+                item['short_content'] = r['short_content'].strip() if r.get('short_content', False) else ''
+                item['content'] = r['content'].strip() if r.get('content', False) else ''
+
+                # 组合列表
                 item['pictures'] = '|||'.join(r['pictures'])
                 item['color'] = '|||'.join(r['color'])
                 item['size'] = '|||'.join([size.strip() for size in r['size']])
 
-                # 给其他字段赋值
+                # 生成sku
                 color = r['color'].split('|||')[0]
                 random_num = str(random.randint(1, 999999))
 
@@ -198,4 +211,16 @@ class CommonFilterMiddleware:
                 item['prosku'] = sku
                 item['stock'] = '999'
 
+                yield item
+
+
+class Test:
+
+    def process_spider_output(self, response, result, spider):
+        for r in result:
+            if not isinstance(r, ShopItem):
+                yield r
+            else:
+                item = r.copy()
+                item['price'] = r['price'].strip().strip('$')
                 yield item

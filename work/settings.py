@@ -4,15 +4,6 @@ from shutil import which
 from os import path
 import json
 
-# Scrapy settings for work project
-#
-# For simplicity, this file contains only settings considered important or
-# commonly used. You can find more settings consulting the documentation:
-#
-#     http://doc.scrapy.org/en/latest/topics/settings.html
-#     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
-#     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
-
 BOT_NAME = 'work'
 
 SPIDER_MODULES = ['work.spiders']
@@ -47,22 +38,13 @@ ROBOTSTXT_OBEY = False
 #   'Accept-Language': 'en',
 # }
 
-# selenium required
-# SELENIUM_DRIVER_NAME = 'chrome'
-# SELENIUM_DRIVER_EXECUTABLE_PATH = which('chromedriver')
-# SELENIUM_DRIVER_ARGUMENTS = []
-# TIMEOUT = 10
-
-# splash required
-SPLASH_URL = 'http://192.168.99.100:8050'
-DUPEFILTER_CLASS = 'scrapy_splash.SplashAwareDupeFilter'
-HTTPCACHE_STORAGE = 'scrapy_splash.SplashAwareFSCacheStorage'
 
 # Enable or disable spider middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 SPIDER_MIDDLEWARES = {
     'scrapy_splash.SplashDeduplicateArgsMiddleware': 100,
-    'work.middlewares.CommonFilterMiddleware': 910,
+    # 'work.middlewares.CommonFilterMiddleware': 910,
+    'work.middlewares.Test': 910,
 }
 
 # Enable or disable downloader middlewares
@@ -71,7 +53,8 @@ DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
     'scrapy_fake_useragent.middleware.RandomUserAgentMiddleware': 400,
 
-    # 'scrapy_selenium.SeleniumMiddleware': 800
+    # 'scrapy_selenium.SeleniumMiddleware': 800,
+
     'scrapy_splash.SplashCookiesMiddleware': 723,
     'scrapy_splash.SplashMiddleware': 725,
     'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
@@ -86,19 +69,9 @@ DOWNLOADER_MIDDLEWARES = {
 #     'scrapy.extensions.telnet.TelnetConsole': None,
 # }
 
+
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
-
-dir_path = path.abspath('.')
-db_info_path = path.join(dir_path, 'db_info.json')
-db_info = json.load(open(db_info_path))
-
-MYSQL_HOST = db_info.get('host', None)
-MYSQL_USER = db_info.get('user', None)
-MYSQL_PASSWORD = db_info.get('password', None)
-MYSQL_DATABASE = db_info.get('database', None)
-MYSQL_TABLE = None  # defined in spider.py
-
 ITEM_PIPELINES = {
     'work.pipelines.MysqlPipeline': 100,
 }
@@ -123,3 +96,33 @@ ITEM_PIPELINES = {
 # HTTPCACHE_DIR = 'httpcache'
 # HTTPCACHE_IGNORE_HTTP_CODES = []
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+""" custom sittings
+"""
+
+# selenium required
+# SELENIUM_DRIVER_NAME = 'chrome'
+# SELENIUM_DRIVER_EXECUTABLE_PATH = which('chromedriver')
+# SELENIUM_DRIVER_ARGUMENTS = []
+# TIMEOUT = 10
+
+# splash required
+SPLASH_URL = 'http://localhost:8050'
+DUPEFILTER_CLASS = 'scrapy_splash.SplashAwareDupeFilter'
+HTTPCACHE_STORAGE = 'scrapy_splash.SplashAwareFSCacheStorage'
+
+dir_path = path.abspath('./work')
+
+proxy_path = path.join(dir_path, 'proxy.json')
+proxy = json.load(open(proxy_path))
+
+PROXY = proxy.get('proxy')
+
+db_info_path = path.join(dir_path, 'db_info.json')
+db_info = json.load(open(db_info_path))
+
+MYSQL_HOST = db_info.get('host')
+MYSQL_USER = db_info.get('user')
+MYSQL_PASSWORD = db_info.get('password')
+MYSQL_DATABASE = db_info.get('database')
+MYSQL_TABLE = None  # defined in spider.py

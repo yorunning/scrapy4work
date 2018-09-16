@@ -11,6 +11,8 @@ import scrapy
 class ShopItem(scrapy.Item):
     """
     单个值使用get(), 可能存在多个值的一律使用getall()
+    值不能为NoneType, 使用''替换
+
     quick use:
         item = ShopItem()
 
