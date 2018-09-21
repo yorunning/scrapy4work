@@ -44,7 +44,12 @@ ROBOTSTXT_OBEY = False
 SPIDER_MIDDLEWARES = {
     'scrapy_splash.SplashDeduplicateArgsMiddleware': 100,
     # 'work.middlewares.CommonFilterMiddleware': 910,
-    'work.middlewares.Test': 910,
+    'work.spidermiddlewares.stripall.StripAllMiddleware': 905,
+    'work.spidermiddlewares.splicecategory.SpliceCategoryMiddleware': 904,
+    'work.spidermiddlewares.splicelist.SpliceListMiddleware': 903,
+    'work.spidermiddlewares.generatesku.GenerateSkuMiddleware': 902,
+    'work.spidermiddlewares.processspecialchar.ProcessSpecialCharMiddleware': 901,
+
 }
 
 # Enable or disable downloader middlewares
@@ -59,8 +64,8 @@ DOWNLOADER_MIDDLEWARES = {
     'scrapy_splash.SplashMiddleware': 725,
     'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
 
-    # 'work.middlewares.SeleniumMiddleware': 543,
-    'work.middlewares.ProxyMiddleware': 740,
+    # 'work.downloadermiddlewares.selenium.SeleniumMiddleware': 543,
+    # 'work.downloadermiddlewares.proxy.ProxyMiddleware': 740,
 }
 
 # Enable or disable extensions
@@ -70,10 +75,17 @@ DOWNLOADER_MIDDLEWARES = {
 # }
 
 
+# The value must be 'mysql','aiomysql','none' or NoneType
+# PIPELINE_ENABLE = ''
+
+# mysql_enabled = 100 if PIPELINE_ENABLE == 'mysql' else None
+# aiomysql_enabled = 100 if PIPELINE_ENABLE == 'aiomysql' else None
+
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'work.pipelines.MysqlPipeline': 100,
+    'work.pipelines.MysqlPipeline': None,
+    'work.pipelines.AioMysqlPipeline': None,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -97,8 +109,16 @@ ITEM_PIPELINES = {
 # HTTPCACHE_IGNORE_HTTP_CODES = []
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-""" custom sittings
-"""
+
+""" custom sittings"""
+
+dir_path = path.abspath('./work/json')
+
+proxy_path = path.join(dir_path, 'proxy.json')
+proxy = json.load(open(proxy_path))
+
+HTTP_PROXY = proxy.get('http_proxy')
+splash_url = proxy.get('splash_url')
 
 # selenium required
 # SELENIUM_DRIVER_NAME = 'chrome'
@@ -107,16 +127,9 @@ ITEM_PIPELINES = {
 # TIMEOUT = 10
 
 # splash required
-SPLASH_URL = 'http://localhost:8050'
+SPLASH_URL = f'http://{splash_url}'
 DUPEFILTER_CLASS = 'scrapy_splash.SplashAwareDupeFilter'
 HTTPCACHE_STORAGE = 'scrapy_splash.SplashAwareFSCacheStorage'
-
-dir_path = path.abspath('./work')
-
-proxy_path = path.join(dir_path, 'proxy.json')
-proxy = json.load(open(proxy_path))
-
-PROXY = proxy.get('proxy')
 
 db_info_path = path.join(dir_path, 'db_info.json')
 db_info = json.load(open(db_info_path))

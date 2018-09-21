@@ -11,7 +11,7 @@ import scrapy
 class ShopItem(scrapy.Item):
     """
     单个值使用get(), 可能存在多个值的一律使用getall()
-    值不能为NoneType, 使用''替换
+    值不能为NoneType, 使用空字符串''替换
 
     quick use:
         item = ShopItem()
@@ -21,7 +21,7 @@ class ShopItem(scrapy.Item):
         item['cat2'] = response.meta['cat2']
         item['cat3'] = response.meta['cat3']
 
-        item['brand'] =
+        item['brand'] = response.xpath('')
         item['gender'] =
         item['producttype'] =
 
@@ -41,10 +41,10 @@ class ShopItem(scrapy.Item):
     cat4 = scrapy.Field()
 
     # category info
+    category = scrapy.Field()
     brand = scrapy.Field()
     gender = scrapy.Field()
     producttype = scrapy.Field()
-    category = scrapy.Field()
 
     # product info
     title = scrapy.Field()
@@ -56,9 +56,9 @@ class ShopItem(scrapy.Item):
     size = scrapy.Field()
 
     # other field
-    PageUrl = scrapy.Field()
     prosku = scrapy.Field()
     stock = scrapy.Field()
+    PageUrl = scrapy.Field()
 
     # caturlsuf = scrapy.Field()
     # description = scrapy.Field()

@@ -8,6 +8,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 import time
 import re
+import asyncio
+import aiomysql
 
 '''
 opt = webdriver.ChromeOptions()
@@ -60,4 +62,37 @@ print(driver.page_source)
 
 '''
 
-re.match()
+loop = asyncio.get_event_loop()
+
+# conn = aiomysql.connect(
+#     host='localhost',
+#     port=3306,
+#     user='root',
+#     password='car990226',
+#     db='yorunw',
+#     charset='utf8',
+#     loop=loop
+# )
+
+
+async def save():
+    conn = await aiomysql.connect(
+        host='localhost',
+        port=3306,
+        user='root',
+        password='car990226',
+        db='yorunw',
+        charset='utf8',
+        loop=loop
+    )
+
+    sql = "insert into test(title) values('123123')"
+
+    async with await conn.cursor() as cursor:
+        await cursor.execute(sql)
+        await conn.commit()
+
+    conn.close()
+
+
+loop.run_until_complete(save())

@@ -6,11 +6,6 @@
 # http://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
-from scrapy.http import HtmlResponse
-from scrapy_splash import SplashRequest
-
-from selenium import webdriver
-from selenium.webdriver.support.wait import WebDriverWait
 
 from work.items import ShopItem
 import random
@@ -112,59 +107,6 @@ class TutorialDownloaderMiddleware(object):
         spider.logger.info('Spider opened: %s' % spider.name)
 
 
-class SeleniumMiddleware:
-    """
-    downloaderMiddleware
-    使用selenium渲染html
-    """
-
-    def __init__(self, timeout):
-        self.driver = webdriver.Chrome()
-        self.driver.implicitly_wait(timeout)
-        self.wait = WebDriverWait(self.driver, timeout)
-
-    @classmethod
-    def from_crawler(cls, crawler):
-        s = cls(crawler.settings.get('TIMEOUT'))
-        crawler.signals.connect(s.spider_opened, signal=signals.spider_opened)
-        crawler.signals.connect(s.spider_closed, signal=signals.spider_closed)
-        return s
-
-    def process_request(self, request, spider):
-        self.driver.get(request.url)
-        return HtmlResponse(url=self.driver.current_url, body=self.driver.page_source, request=request,
-                            encoding='utf-8', status=200)
-
-    def spider_opened(self, spider):
-        spider.logger.info('Spider opened: %s' % spider.name)
-
-    def spider_closed(self):
-        self.driver.close()
-
-
-class ProxyMiddleware:
-    """
-    downloaderMiddleware
-    设置代理
-    """
-
-    def __init__(self, proxy):
-        self.proxy = proxy
-
-    @classmethod
-    def from_crawler(cls, crawler):
-        s = cls(crawler.settings.get('PROXY'))
-        return s
-
-    def process_request(self, request, spider):
-        if isinstance(request, SplashRequest):
-            # SplashRequest
-            request.meta['splash']['args']['proxy'] = f'http://{self.proxy}'
-        else:
-            # scrapy Request and SeleniumRequest
-            request.meta['proxy'] = f'http://{self.proxy}'
-
-
 class CommonFilterMiddleware:
     """
     spiderMiddleware
@@ -206,21 +148,9 @@ class CommonFilterMiddleware:
                 random_num = str(random.randint(1, 999999))
 
                 sku = '_'.join((r['brand'], r['gender'], r['producttype'], color, random_num)).strip().strip('_')
-                sku = re.sub(r'[\s&/__]+', '_', sku)
+                sku = re.sub(r'[\s&/_]+', '_', sku)
 
                 item['prosku'] = sku
                 item['stock'] = '999'
 
-                yield item
-
-
-class Test:
-
-    def process_spider_output(self, response, result, spider):
-        for r in result:
-            if not isinstance(r, ShopItem):
-                yield r
-            else:
-                item = r.copy()
-                item['price'] = r['price'].strip().strip('$')
                 yield item

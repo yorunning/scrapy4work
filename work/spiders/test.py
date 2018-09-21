@@ -2,19 +2,22 @@
 import scrapy
 from scrapy.http import Request
 from work.items import ShopItem
-from scrapy_selenium import SeleniumRequest
 
 
-class HuffashionsSpider(scrapy.Spider):
+class TestSpider(scrapy.Spider):
     """
     主要用于测试scrapy框架的整合
     """
-    name = 'huffashions'
+
+    name = 'test'
     allowed_domains = ['www.huffashions.com']
     start_urls = ['http://www.huffashions.com/']
     custom_settings = {
-        'MYSQL_TABLE': 'huffashions_table',
-        'ITEM_PIPELINES': {}
+        'MYSQL_TABLE': 'test',
+        'ITEM_PIPELINES': {
+            'work.pipelines.MysqlPipeline': None,
+            'work.pipelines.AioMysqlPipeline': 100,
+        }
     }
 
     def parse(self, response):

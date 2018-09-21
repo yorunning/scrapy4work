@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
-# Define your item pipelines here
-#
-# Don't forget to add your pipeline to the ITEM_PIPELINES setting
-# See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
+
 import pymysql
+import asyncio
+import uvloop
 import aiomysql
 
 
 class MysqlPipeline:
+    """ 常规mysql，阻塞式"""
 
     def __init__(self, host, user, password, database, table):
         self.host = host
@@ -16,8 +16,7 @@ class MysqlPipeline:
         self.password = password
         self.database = database
         self.table = table
-        self.db = None
-        self.cursor = None
+        self.conn = None
 
     @classmethod
     def from_crawler(cls, crawler):
@@ -30,12 +29,17 @@ class MysqlPipeline:
         )
 
     def open_spider(self, spider):
-        self.db = pymysql.connect(self.host, self.user, self.password, self.database, port=3306, charset='utf8')
-        self.cursor = self.db.cursor()
+        self.conn = pymysql.connect(
+            host=self.host,
+            port=3306,
+            user=self.user,
+            password=self.password,
+            database=self.database,
+            charset='utf8'
+        )
 
     def close_spider(self, spider):
-        self.cursor.close()
-        self.db.close()
+        self.conn.close()
 
     def process_item(self, item, spider):
         data = dict(item)
@@ -44,11 +48,54 @@ class MysqlPipeline:
 
         sql = f'insert into {self.table}({keys}) values({values_placeholder})'
 
-        self.cursor.execute(sql, tuple(data.values()))
-        self.db.commit()
+        with self.conn.cursor() as cursor:
+            cursor.execute(sql, tuple(data.values()))
 
+        self.conn.commit()
         return item
 
 
-class AioMysqlPipeline:
-    pass
+class AioMysqlPipeline(MysqlPipeline):
+    """ 异步mysql，非阻塞"""
+
+    def __init__(self, host, user, password, database, table):
+        super(AioMysqlPipeline, self).__init__(host, user, password, database, table)
+        asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+        self.loop = asyncio.get_event_loop()
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return super(AioMysqlPipeline, cls).from_crawler(crawler)
+
+    def open_spider(self, spider):
+        self.loop.run_until_complete(self.open_conn())
+
+    def close_spider(self, spider):
+        self.conn.close()
+        self.loop.close()
+
+    def process_item(self, item, spider):
+        self.loop.run_until_complete(self.save(item))
+        return item
+
+    async def open_conn(self):
+        self.conn = await aiomysql.connect(
+            host=self.host,
+            port=3306,
+            user=self.user,
+            password=self.password,
+            db=self.database,
+            charset='utf8',
+            loop=self.loop
+        )
+
+    async def save(self, item):
+        data = dict(item)
+        keys = ','.join(data.keys())
+        values_placeholder = ','.join(('%s',) * len(data))
+
+        sql = f'insert into {self.table}({keys}) values({values_placeholder})'
+
+        async with self.conn.cursor() as cursor:
+            await cursor.execute(sql, tuple(data.values()))
+            await self.conn.commit()
