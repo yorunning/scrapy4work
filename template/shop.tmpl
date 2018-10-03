@@ -13,7 +13,10 @@ class $classname(scrapy.Spider):
 
     custom_settings = {
         'MYSQL_TABLE': 'data_content_',
-        'ITEM_PIPELINES': {}
+        'ITEM_PIPELINES': {
+            'work.pipelines.MysqlPipeline': None,
+            'work.pipelines.AioMysqlPipeline': 100,
+        }
     }
 
     def parse(self, response):
@@ -31,8 +34,7 @@ class $classname(scrapy.Spider):
                     cat3 = nav_level_3.xpath('').get().strip()
                     nav_level_3_url = nav_level_3.xpath('').get()
 
-                    print(f'{cat1}---{cat2}---{cat3}')
-
+                    self.logger.info(f'{cat1}---{cat2}---{cat3}')
                     meta = {'cat1': cat1, 'cat2': cat2, 'cat3': cat3}
 
                     yield Request(response.urljoin(nav_level_3_url), self.parse_product_url, meta=meta)

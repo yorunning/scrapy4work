@@ -2,6 +2,7 @@
 import scrapy
 from scrapy.http import Request
 from work.items import ShopItem
+from scrapy_splash import SplashRequest
 
 
 class TestSpider(scrapy.Spider):
@@ -29,28 +30,27 @@ class TestSpider(scrapy.Spider):
 
             for nav_level_2 in nav_level_2_list:
                 cat2 = nav_level_2.xpath('./a/text()').get()
-                nav_level_2_url = nav_level_2.xpath('./@href').get()
+                nav_level_2_url = nav_level_2.xpath('./a/@href').get()
 
-                print(f'{cat1}---{cat2}')
+                self.logger.info(f'{cat1}---{cat2}')
+                meta = {'cat1': cat1, 'cat2': cat2}
 
-                meta = {
-                    'cat1': cat1,
-                    'cat2': cat2
-                }
-
-                yield Request(response.urljoin(nav_level_2_url), self.parse_product_url, meta=meta)
+                # yield Request(response.urljoin(nav_level_2_url), self.parse_product_url, meta=meta)
+                yield SplashRequest(response.urljoin(nav_level_2_url), self.parse_product_url, meta=meta)
 
     def parse_product_url(self, response):
         product_list = response.xpath('//li[@class="item last"]')
 
         for product in product_list:
             product_url = product.xpath('./a/@href').get()
-            yield Request(response.urljoin(product_url), self.parse_product_info, meta=response.meta)
+            # yield Request(response.urljoin(product_url), self.parse_product_info, meta=response.meta)
+            yield SplashRequest(response.urljoin(product_url), self.parse_product_info, meta=response.meta)
 
         next_page = response.xpath('//a[@class="next i-next"]/@href').get()
 
         if next_page is not None:
-            yield Request(response.urljoin(next_page), self.parse_product_url, meta=response.meta)
+            # yield Request(response.urljoin(next_page), self.parse_product_url, meta=response.meta)
+            yield SplashRequest(response.urljoin(next_page), self.parse_product_url, meta=response.meta)
 
     def parse_product_info(self, response):
         item = ShopItem()

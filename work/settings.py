@@ -7,7 +7,7 @@ import json
 BOT_NAME = 'work'
 
 SPIDER_MODULES = ['work.spiders']
-NEWSPIDER_MODULE = 'work.spiders.year_2018.month_9.date_13'
+NEWSPIDER_MODULE = 'work.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36'
@@ -43,13 +43,12 @@ ROBOTSTXT_OBEY = False
 # See http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 SPIDER_MIDDLEWARES = {
     'scrapy_splash.SplashDeduplicateArgsMiddleware': 100,
-    # 'work.middlewares.CommonFilterMiddleware': 910,
-    'work.spidermiddlewares.stripall.StripAllMiddleware': 905,
-    'work.spidermiddlewares.splicecategory.SpliceCategoryMiddleware': 904,
-    'work.spidermiddlewares.splicelist.SpliceListMiddleware': 903,
+
+    'work.spidermiddlewares.strip.StripAllMiddleware': 905,
+    'work.spidermiddlewares.splice.SpliceCategoryMiddleware': 904,
+    'work.spidermiddlewares.splice.SpliceListMiddleware': 903,
     'work.spidermiddlewares.generatesku.GenerateSkuMiddleware': 902,
     'work.spidermiddlewares.processspecialchar.ProcessSpecialCharMiddleware': 901,
-
 }
 
 # Enable or disable downloader middlewares
@@ -64,8 +63,9 @@ DOWNLOADER_MIDDLEWARES = {
     'scrapy_splash.SplashMiddleware': 725,
     'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
 
-    # 'work.downloadermiddlewares.selenium.SeleniumMiddleware': 543,
-    # 'work.downloadermiddlewares.proxy.ProxyMiddleware': 740,
+    # 'work.downloadermiddlewares.selenium.SeleniumMiddleware': 800,
+    'work.downloadermiddlewares.splashargs.SplashArgsMiddleware': 730,
+    'work.downloadermiddlewares.proxy.ProxyMiddleware': 740,
 }
 
 # Enable or disable extensions
@@ -74,12 +74,6 @@ DOWNLOADER_MIDDLEWARES = {
 #     'scrapy.extensions.telnet.TelnetConsole': None,
 # }
 
-
-# The value must be 'mysql','aiomysql','none' or NoneType
-# PIPELINE_ENABLE = ''
-
-# mysql_enabled = 100 if PIPELINE_ENABLE == 'mysql' else None
-# aiomysql_enabled = 100 if PIPELINE_ENABLE == 'aiomysql' else None
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
@@ -114,6 +108,7 @@ ITEM_PIPELINES = {
 
 dir_path = path.abspath('./work/json')
 
+# 加载代理json
 proxy_path = path.join(dir_path, 'proxy.json')
 proxy = json.load(open(proxy_path))
 
@@ -131,6 +126,7 @@ SPLASH_URL = f'http://{splash_url}'
 DUPEFILTER_CLASS = 'scrapy_splash.SplashAwareDupeFilter'
 HTTPCACHE_STORAGE = 'scrapy_splash.SplashAwareFSCacheStorage'
 
+# 加载数据库信息
 db_info_path = path.join(dir_path, 'db_info.json')
 db_info = json.load(open(db_info_path))
 

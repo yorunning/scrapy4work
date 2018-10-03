@@ -7,10 +7,6 @@
 
 from scrapy import signals
 
-from work.items import ShopItem
-import random
-import re
-
 
 class TutorialSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
@@ -105,52 +101,3 @@ class TutorialDownloaderMiddleware(object):
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
-
-
-class CommonFilterMiddleware:
-    """
-    spiderMiddleware
-    对数据处理进行一些常用的处理
-    """
-
-    def process_spider_output(self, response, result, spider):
-        for r in result:
-            if not isinstance(r, ShopItem):
-                yield r
-            else:
-                item = r.copy()
-
-                item['cat1'] = r['cat1'].strip()
-
-                # 拼接category
-                if r.get('cat4', False):
-                    item['category'] = '|||'.join((r['cat1'], r['cat2'], r['cat3'], r['cat4']))
-                elif r.get('cat3', False):
-                    item['category'] = '|||'.join((r['cat1'], r['cat2'], r['cat3']))
-                else:
-                    item['category'] = '|||'.join((r['cat1'], r['cat2']))
-
-                # 去头部尾部空格及特殊字符
-                item['title'] = r['title'].strip()
-                item['price'] = r['price'].strip().strip('$').strip('£').strip('€')
-
-                # 如果没有匹配到描述设为''
-                item['short_content'] = r['short_content'].strip() if r.get('short_content', False) else ''
-                item['content'] = r['content'].strip() if r.get('content', False) else ''
-
-                # 组合列表
-                item['pictures'] = '|||'.join(r['pictures'])
-                item['color'] = '|||'.join(r['color'])
-                item['size'] = '|||'.join([size.strip() for size in r['size']])
-
-                # 生成sku
-                color = r['color'].split('|||')[0]
-                random_num = str(random.randint(1, 999999))
-
-                sku = '_'.join((r['brand'], r['gender'], r['producttype'], color, random_num)).strip().strip('_')
-                sku = re.sub(r'[\s&/_]+', '_', sku)
-
-                item['prosku'] = sku
-                item['stock'] = '999'
-
-                yield item

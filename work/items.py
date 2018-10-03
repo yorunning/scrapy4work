@@ -5,13 +5,13 @@
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/items.html
 
-import scrapy
+from scrapy import Item, Field
 
 
-class ShopItem(scrapy.Item):
+class ShopItem(Item):
     """
-    单个值使用get(), 可能存在多个值的一律使用getall()
-    值不能为NoneType, 使用空字符串''替换
+    单个值使用get()，可能存在多个值的一律使用getall()
+    值不能为NoneType，使用空字符串''替换
 
     quick use:
         item = ShopItem()
@@ -35,30 +35,30 @@ class ShopItem(scrapy.Item):
     """
 
     # custom field
-    cat1 = scrapy.Field()
-    cat2 = scrapy.Field()
-    cat3 = scrapy.Field()
-    cat4 = scrapy.Field()
+    cat1 = Field()
+    cat2 = Field()
+    cat3 = Field()
+    cat4 = Field()
 
     # category info
-    category = scrapy.Field()
-    brand = scrapy.Field()
-    gender = scrapy.Field()
-    producttype = scrapy.Field()
+    category = Field()
+    brand = Field()
+    gender = Field()
+    producttype = Field()
 
     # product info
-    title = scrapy.Field()
-    price = scrapy.Field()
-    short_content = scrapy.Field()
-    content = scrapy.Field()
-    pictures = scrapy.Field()
-    color = scrapy.Field()
-    size = scrapy.Field()
+    title = Field()
+    price = Field()
+    short_content = Field()
+    content = Field()
+    pictures = Field()
+    color = Field()
+    size = Field()
 
     # other field
-    prosku = scrapy.Field()
-    stock = scrapy.Field()
-    PageUrl = scrapy.Field()
+    prosku = Field()
+    stock = Field()
+    PageUrl = Field()
 
     # caturlsuf = scrapy.Field()
     # description = scrapy.Field()

@@ -1,0 +1,32 @@
+from scrapy import signals
+from scrapy_splash import SplashRequest
+import logging
+
+
+class SplashArgsMiddleware:
+    """ 设置splash常用的参数"""
+
+    def __init__(self):
+        self.logger = logging.getLogger('work.middlewares.SplashArgsMiddleware')
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        s = cls()
+        crawler.signals.connect(s.spider_opened, signal=signals.spider_opened)
+        return s
+
+    def process_request(self, request, spider):
+        if isinstance(request, SplashRequest):
+            splash_args = request.meta['splash']['args']
+
+            splash_args.setdefault('wait', 3)
+            splash_args.setdefault('timeout', 300)
+            splash_args.setdefault('images', 0)
+
+            # request.meta['splash']['args']['wait'] = 3
+            # request.meta['splash']['args']['timeout'] = 10
+            # request.meta['splash']['args']['images'] = 0
+
+
+    def spider_opened(self):
+        self.logger.info('SplashArgsMiddleware opened')

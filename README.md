@@ -3,9 +3,9 @@ add `db_info.json` to `./work/json`
 ```json
 {
   "host": "host",
-  "user": "yorun",
-  "password": "123",
-  "database": "work"
+  "user": "username",
+  "password": "password",
+  "database": "database"
 }
 ```
 
