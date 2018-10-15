@@ -1,4 +1,4 @@
-add `db_info.json` to `./work/json`
+add `db_info.json` to `./work/resource`
 
 ```json
 {
@@ -9,11 +9,11 @@ add `db_info.json` to `./work/json`
 }
 ```
 
-add `proxy.json` to `./work/json`
+add `proxy.json` to `./work/resource`
 
 ```json
 {
-  "http_proxy": "ip:port",
+  "proxy_url": "ip:port",
   "splash_url": "ip:8050"
 }
 ```

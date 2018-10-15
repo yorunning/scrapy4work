@@ -7,7 +7,7 @@ import logging
 
 
 class SeleniumMiddleware:
-    """ 使用selenium渲染html"""
+    """使用selenium渲染html"""
 
     def __init__(self, timeout):
         self.driver = webdriver.Chrome()

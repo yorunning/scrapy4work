@@ -53,18 +53,20 @@ class Test2Spider(scrapy.Spider):
                     yield SplashRequest(response.urljoin(nav_level_3_url), self.parse_product_url, meta=meta)
 
     def parse_product_url(self, response):
-        product_list = response.xpath('//div[@class="products-grid"]//div[@class="col-xs-5 col-sm-12"]')[:48]
+        product_list = response.xpath('//div[@class="products-grid"]/div')
+
+        self.logger.info(response.text)
 
         for product in product_list:
             product_url = product.xpath('./a/@href').get()
 
-            self.logger.info(product_url)
+            self.logger.info('product url is %s' % product_url)
 
             # yield SplashRequest(response.urljoin(product_url), self.parse_product_info, meta=response.meta)
 
         next_page = response.xpath('//a[@class="next i-next"]/@href').get()
 
-        self.logger.info('next page is %s' % next_page)
+        # self.logger.info('next page is %s' % next_page)
 
         if next_page is not None:
             yield SplashRequest(response.urljoin(next_page), self.parse_product_url, meta=response.meta)

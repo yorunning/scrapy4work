@@ -3,7 +3,7 @@ import re
 
 
 class ProcessSpecialCharMiddleware:
-    """ 处理特殊字符"""
+    """处理特殊字符"""
 
     def process_spider_output(self, response, result, spider):
         for r in result:

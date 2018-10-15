@@ -5,6 +5,7 @@ import pymysql
 import asyncio
 import aiomysql
 import os
+from work.utils import filter_brand
 
 
 class MysqlPipeline:
@@ -52,11 +53,23 @@ class MysqlPipeline:
 
         return f'insert into {self.table}({keys}) values({values_placeholder})'
 
+    def _filter_brand(self, brand):
+        return filter_brand(brand)
+
+    def filter(self, fn):
+        def wrapper(item, *args, **kwargs):
+            if self._filter_brand(item.get('brand')):
+                return fn(item, *args, **kwargs)
+
+        return wrapper
+
+    # @filter
     def process_item(self, item, spider):
-        with self.conn.cursor() as cursor:
-            cursor.execute(self._get_sql(item), tuple(item.values()))
-            self.conn.commit()
-        return item
+        if not self._filter_brand(item.get('brand')):
+            with self.conn.cursor() as cursor:
+                cursor.execute(self._get_sql(item), tuple(item.values()))
+                self.conn.commit()
+            return item
 
 
 class AioMysqlPipeline(MysqlPipeline):
@@ -73,7 +86,7 @@ class AioMysqlPipeline(MysqlPipeline):
         self.loop.run_until_complete(self.open_conn())
 
     def close_spider(self, spider):
-        super(AioMysqlPipeline, self).close_spider()
+        super(AioMysqlPipeline, self).close_spider(spider)
         self.loop.close()
 
     def process_item(self, item, spider):

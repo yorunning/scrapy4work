@@ -2,7 +2,7 @@ from work.items import ShopItem
 
 
 class SpliceCategoryMiddleware:
-    """ 拼接category"""
+    """拼接category"""
 
     def process_spider_output(self, response, result, spider):
         for r in result:
@@ -22,7 +22,7 @@ class SpliceCategoryMiddleware:
 
 
 class SpliceListMiddleware:
-    """ 拼接列表字段"""
+    """拼接列表字段"""
 
     def process_spider_output(self, response, result, spider):
         for r in result:

@@ -16,8 +16,8 @@ class TestSpider(scrapy.Spider):
     custom_settings = {
         'MYSQL_TABLE': 'test',
         'ITEM_PIPELINES': {
-            'work.pipelines.MysqlPipeline': None,
-            'work.pipelines.AioMysqlPipeline': 100,
+            'work.pipelines.MysqlPipeline': 100,
+            'work.pipelines.AioMysqlPipeline': None,
         }
     }
 
@@ -35,22 +35,22 @@ class TestSpider(scrapy.Spider):
                 self.logger.info(f'{cat1}---{cat2}')
                 meta = {'cat1': cat1, 'cat2': cat2}
 
-                # yield Request(response.urljoin(nav_level_2_url), self.parse_product_url, meta=meta)
-                yield SplashRequest(response.urljoin(nav_level_2_url), self.parse_product_url, meta=meta)
+                yield Request(response.urljoin(nav_level_2_url), self.parse_product_url, meta=meta)
+                # yield SplashRequest(response.urljoin(nav_level_2_url), self.parse_product_url, meta=meta)
 
     def parse_product_url(self, response):
         product_list = response.xpath('//li[@class="item last"]')
 
         for product in product_list:
             product_url = product.xpath('./a/@href').get()
-            # yield Request(response.urljoin(product_url), self.parse_product_info, meta=response.meta)
-            yield SplashRequest(response.urljoin(product_url), self.parse_product_info, meta=response.meta)
+            yield Request(response.urljoin(product_url), self.parse_product_info, meta=response.meta)
+            # yield SplashRequest(response.urljoin(product_url), self.parse_product_info, meta=response.meta)
 
         next_page = response.xpath('//a[@class="next i-next"]/@href').get()
 
         if next_page is not None:
-            # yield Request(response.urljoin(next_page), self.parse_product_url, meta=response.meta)
-            yield SplashRequest(response.urljoin(next_page), self.parse_product_url, meta=response.meta)
+            yield Request(response.urljoin(next_page), self.parse_product_url, meta=response.meta)
+            # yield SplashRequest(response.urljoin(next_page), self.parse_product_url, meta=response.meta)
 
     def parse_product_info(self, response):
         item = ShopItem()

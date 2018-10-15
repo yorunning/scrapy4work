@@ -62,33 +62,39 @@ print(driver.page_source)
 
 '''
 
-loop = asyncio.get_event_loop()
+# loop = asyncio.get_event_loop()
+#
+#
+# async def save():
+#     conn = await aiomysql.connect(
+#         host='localhost',
+#         port=3306,
+#         user='root',
+#         password='car990226',
+#         db='yorunw',
+#         charset='utf8',
+#         loop=loop
+#     )
+#
+#     sql = "insert into test(title) values('123123')"
+#
+#     async with await conn.cursor() as cursor:
+#         await cursor.execute(sql)
+#         await conn.commit()
+#
+#     conn.close()
+#
+#
+# loop.run_until_complete(save())
+#
+#
+#
+# [print(f'\'{l}\'') for l in'\u602a\u6211\u773c\u778e\n\u7535\u89c6\u5267\u770b\u591a\u4e86\n\u9b54\u6014\u4e86\u5427\n\u4e0d\u770b\u770b\u81ea\u5df1\u4ec0\u4e48\u6837\n\u7b97\u4e86\n\u61d2\u5f97\u8bf4\u810f\u5b57'.split('\n')]
+#
+# i=dict()
 
+from work.utils import filter_brand
 
-async def save():
-    conn = await aiomysql.connect(
-        host='localhost',
-        port=3306,
-        user='root',
-        password='car990226',
-        db='yorunw',
-        charset='utf8',
-        loop=loop
-    )
+result = filter_brand('ghD')
 
-    sql = "insert into test(title) values('123123')"
-
-    async with await conn.cursor() as cursor:
-        await cursor.execute(sql)
-        await conn.commit()
-
-    conn.close()
-
-
-loop.run_until_complete(save())
-
-
-
-[print(f'\'{l}\'') for l in'\u602a\u6211\u773c\u778e\n\u7535\u89c6\u5267\u770b\u591a\u4e86\n\u9b54\u6014\u4e86\u5427\n\u4e0d\u770b\u770b\u81ea\u5df1\u4ec0\u4e48\u6837\n\u7b97\u4e86\n\u61d2\u5f97\u8bf4\u810f\u5b57'.split('\n')]
-
-i=dict()
+print(result)

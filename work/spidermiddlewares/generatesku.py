@@ -3,7 +3,7 @@ import random, re
 
 
 class GenerateSkuMiddleware:
-    """ 生成sku及库存"""
+    """生成sku及库存"""
 
     def process_spider_output(self, response, result, spider):
         for r in result:

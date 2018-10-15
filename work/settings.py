@@ -106,13 +106,13 @@ ITEM_PIPELINES = {
 
 """ custom sittings"""
 
-dir_path = path.abspath('./work/json')
+dir_path = path.abspath('./work/resource')
 
 # 加载代理json
 proxy_path = path.join(dir_path, 'proxy.json')
 proxy = json.load(open(proxy_path))
 
-HTTP_PROXY = proxy.get('http_proxy')
+HTTP_PROXY = proxy.get('proxy_url')
 splash_url = proxy.get('splash_url')
 
 # selenium required
