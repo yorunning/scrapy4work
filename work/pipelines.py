@@ -1,11 +1,33 @@
 # -*- coding: utf-8 -*-
 
-
 import pymysql
 import asyncio
 import aiomysql
 import os
-from work.utils import filter_brand
+import re
+from scrapy.exceptions import DropItem
+
+
+class FilterBrandPipeline:
+    """过滤违禁品"""
+
+    def __init__(self, disallow_brand):
+        self.disallow_brand = disallow_brand
+        self.disallow_brand_list = None
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(crawler.settings.get('DISALLOW_BRAND'))
+
+    def open_spider(self, spider):
+        with open(self.disallow_brand, 'r') as f:
+            self.disallow_brand_list = [line.strip() for line in f]
+
+    def process_item(self, item, spider):
+        for disallow_brand in self.disallow_brand_list:
+            if re.match(item.get('brand'), disallow_brand, flags=re.I):
+                raise DropItem('disallow brand!')
+        return item
 
 
 class MysqlPipeline:
@@ -35,6 +57,11 @@ class MysqlPipeline:
     def close_spider(self, spider):
         self.conn.close()
 
+    def process_item(self, item, spider):
+        with self.conn.cursor() as cursor:
+            cursor.execute(self._get_sql(item), tuple(item.values()))
+            self.conn.commit()
+
     def _get_db_info(self):
         """返回数据库连接信息"""
         return {
@@ -52,24 +79,6 @@ class MysqlPipeline:
         values_placeholder = ','.join(('%s',) * len(data))
 
         return f'insert into {self.table}({keys}) values({values_placeholder})'
-
-    def _filter_brand(self, brand):
-        return filter_brand(brand)
-
-    def filter(self, fn):
-        def wrapper(item, *args, **kwargs):
-            if self._filter_brand(item.get('brand')):
-                return fn(item, *args, **kwargs)
-
-        return wrapper
-
-    # @filter
-    def process_item(self, item, spider):
-        if not self._filter_brand(item.get('brand')):
-            with self.conn.cursor() as cursor:
-                cursor.execute(self._get_sql(item), tuple(item.values()))
-                self.conn.commit()
-            return item
 
 
 class AioMysqlPipeline(MysqlPipeline):
