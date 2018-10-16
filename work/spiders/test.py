@@ -7,7 +7,10 @@ from scrapy_splash import SplashRequest
 
 class TestSpider(scrapy.Spider):
     """
-    主要用于测试scrapy框架的整合
+    :# 语言:
+    :# 货币:
+    :# 主题:
+    :# 备注:
     """
 
     name = 'test'

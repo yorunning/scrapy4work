@@ -7,6 +7,13 @@ import re
 
 
 class $classname(scrapy.Spider):
+    """
+    :# 语言:
+    :# 货币:
+    :# 主题:
+    :# 备注:
+    """
+
     name = '$name'
     allowed_domains = ['$domain']
     start_urls = ['https://$domain/']
@@ -14,8 +21,8 @@ class $classname(scrapy.Spider):
     custom_settings = {
         'MYSQL_TABLE': 'data_content_',
         'ITEM_PIPELINES': {
-            'work.pipelines.MysqlPipeline': None,
-            'work.pipelines.AioMysqlPipeline': 100,
+            'work.pipelines.MysqlPipeline': 100,
+            'work.pipelines.AioMysqlPipeline': None,
         }
     }
 

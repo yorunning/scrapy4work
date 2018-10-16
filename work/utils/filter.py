@@ -1,5 +1,4 @@
 from os import path
-import json
 import re
 
 
@@ -13,9 +12,8 @@ def filter_category(category, *disallow_category_list):
 
     # disallow_category_list = disallow_category_list
 
-    for disallow_category in disallow_category_list:
-        if category == disallow_category:
-            return True
+    if category in disallow_category_list:
+        return True
     return False
 
 
