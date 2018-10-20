@@ -23,8 +23,8 @@ class SeleniumMiddleware:
 
     def process_request(self, request, spider):
         self.driver.get(request.url)
-        return HtmlResponse(url=self.driver.current_url, body=self.driver.page_source, request=request,
-                            encoding='utf-8', status=200)
+        return HtmlResponse(url=self.driver.current_url, body=self.driver.page_source,
+                            request=request, encoding='utf-8', status=200)
 
     def spider_opened(self):
         logger = logging.getLogger('work.middleware.SeleniumMiddleware')

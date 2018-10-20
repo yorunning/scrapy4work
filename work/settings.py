@@ -68,13 +68,13 @@ DOWNLOADER_MIDDLEWARES = {
     'work.downloadermiddlewares.splashargs.SplashArgsMiddleware': 730,
     'work.downloadermiddlewares.proxy.ProxyMiddleware': 740,
 
-    'work.downloadermiddlewares.unescape.HtmlUnEscapeMiddleware': 900
+    'work.downloadermiddlewares.unescape.HtmlUnEscapeMiddleware': 200
 }
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'work.pipelines.FilterBrandPipeline': 99,
+    'work.pipelines.FilterBrandPipeline': 90,
     'work.pipelines.MysqlPipeline': None,
     'work.pipelines.AioMysqlPipeline': None,
 }
@@ -111,3 +111,5 @@ HTTPCACHE_STORAGE = 'scrapy_splash.SplashAwareFSCacheStorage'
 # SELENIUM_DRIVER_NAME = 'chrome'
 # SELENIUM_DRIVER_EXECUTABLE_PATH = which('chromedriver')
 # SELENIUM_DRIVER_ARGUMENTS = []
+
+FAKEUSERAGENT_FALLBACK = 'Mozilla'

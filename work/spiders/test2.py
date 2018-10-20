@@ -55,8 +55,6 @@ class Test2Spider(scrapy.Spider):
     def parse_product_url(self, response):
         product_list = response.xpath('//div[@class="products-grid"]/div')
 
-        self.logger.info(response.text)
-
         for product in product_list:
             product_url = product.xpath('./a/@href').get()
 

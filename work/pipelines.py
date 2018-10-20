@@ -61,6 +61,7 @@ class MysqlPipeline:
         with self.conn.cursor() as cursor:
             cursor.execute(self._get_sql(item), tuple(item.values()))
             self.conn.commit()
+        return item
 
     def _get_db_info(self):
         """返回数据库连接信息"""
