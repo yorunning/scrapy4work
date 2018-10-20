@@ -7,7 +7,7 @@ class SplashArgsMiddleware:
     """设置splash常用的参数"""
 
     def __init__(self):
-        self.logger = logging.getLogger('work.middlewares.SplashArgsMiddleware')
+        self.logger = logging.getLogger('work.SplashArgsMiddleware')
 
     @classmethod
     def from_crawler(cls, crawler):
@@ -23,10 +23,6 @@ class SplashArgsMiddleware:
             splash_args.setdefault('timeout', 60)
             splash_args.setdefault('resource_timeout', 10)
             splash_args.setdefault('images', 0)
-
-            # request.meta['splash']['args']['wait'] = 3
-            # request.meta['splash']['args']['timeout'] = 10
-            # request.meta['splash']['args']['images'] = 0
 
     def spider_opened(self):
         self.logger.info('SplashArgsMiddleware opened')

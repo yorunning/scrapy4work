@@ -2,7 +2,7 @@ from work.items import ShopItem
 
 
 class StripAllMiddleware:
-    """去内容前后空白"""
+    """去除内容前后空白"""
 
     def process_spider_output(self, response, result, spider):
         for r in result:

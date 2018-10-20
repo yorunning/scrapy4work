@@ -45,8 +45,8 @@ SPIDER_MIDDLEWARES = {
     'work.spidermiddlewares.strip.StripAllMiddleware': 905,
     'work.spidermiddlewares.splice.SpliceCategoryMiddleware': 904,
     'work.spidermiddlewares.splice.SpliceListMiddleware': 903,
-    'work.spidermiddlewares.generatesku.GenerateSkuMiddleware': 902,
-    'work.spidermiddlewares.processspecialchar.ProcessSpecialCharMiddleware': 901,
+    'work.spidermiddlewares.gensku.GenerateSkuMiddleware': 902,
+    'work.spidermiddlewares.special.ProcessSpecialCharMiddleware': 901,
 }
 
 # Enable or disable downloader middlewares
@@ -67,14 +67,9 @@ DOWNLOADER_MIDDLEWARES = {
     # 'work.downloadermiddlewares.selenium.SeleniumMiddleware': 800,
     'work.downloadermiddlewares.splashargs.SplashArgsMiddleware': 730,
     'work.downloadermiddlewares.proxy.ProxyMiddleware': 740,
+
+    'work.downloadermiddlewares.unescape.HtmlUnEscapeMiddleware': 900
 }
-
-# Enable or disable extensions
-# See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
-# EXTENSIONS = {
-#     'scrapy.extensions.telnet.TelnetConsole': None,
-# }
-
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
@@ -84,31 +79,7 @@ ITEM_PIPELINES = {
     'work.pipelines.AioMysqlPipeline': None,
 }
 
-# Enable and configure the AutoThrottle extension (disabled by default)
-# See http://doc.scrapy.org/en/latest/topics/autothrottle.html
-# AUTOTHROTTLE_ENABLED = True
-# The initial download delay
-# AUTOTHROTTLE_START_DELAY = 5
-# The maximum download delay to be set in case of high latencies
-# AUTOTHROTTLE_MAX_DELAY = 60
-# The average number of requests Scrapy should be sending in parallel to
-# each remote server
-# AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
-# Enable showing throttling stats for every response received:
-# AUTOTHROTTLE_DEBUG = False
-
-# Enable and configure HTTP caching (disabled by default)
-# See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings
-# HTTPCACHE_ENABLED = True
-# HTTPCACHE_EXPIRATION_SECS = 0
-# HTTPCACHE_DIR = 'httpcache'
-# HTTPCACHE_IGNORE_HTTP_CODES = []
-# HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
-
-
-# custom
-
-# 资源路径
+# 资源文件夹路径
 resource_path = path.abspath('./work/resource')
 
 # 违禁品路径
@@ -128,6 +99,7 @@ MYSQL_TABLE = None  # defined in spider.py
 proxy_path = path.join(resource_path, 'proxy.json')
 proxy = json.load(open(proxy_path))
 
+# http代理
 HTTP_PROXY = proxy.get('proxy_url')
 
 # splash required

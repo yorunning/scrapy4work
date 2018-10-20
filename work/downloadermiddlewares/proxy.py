@@ -7,7 +7,7 @@ class ProxyMiddleware:
     """设置代理"""
 
     def __init__(self, proxy):
-        self.logger = logging.getLogger('work.middlewares.ProxyMiddleware')
+        self.logger = logging.getLogger('work.ProxyMiddleware')
         self.proxy = proxy
 
     @classmethod

@@ -93,8 +93,16 @@ print(driver.page_source)
 #
 # i=dict()
 
-from work.utils import filter_brand
+# from work.utils import filter_brand
+#
+# result = filter_brand('ghD')
+#
+# print(result)
 
-result = filter_brand('ghD')
+import html
 
-print(result)
+s = html.unescape("&#309;&nbsp;&amp;")
+ss = html.escape("< '&")
+
+print(s)
+print(ss)

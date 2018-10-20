@@ -15,7 +15,7 @@ class GenerateSkuMiddleware:
 
                 sku = '_'.join((r['brand'], r['gender'], r['producttype'], color, random_num)) # 拼接
 
-                sku = sku.strip('_') # 去掉头部可能出现的_
+                sku = sku.strip('_') # 去掉头尾可能出现的_
                 sku = re.sub(r'[\s&/_]+', '_', sku) # 替换特殊字符
 
                 r['prosku'] = sku

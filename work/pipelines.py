@@ -31,7 +31,7 @@ class FilterBrandPipeline:
 
 
 class MysqlPipeline:
-    """ 常规mysql，阻塞式"""
+    """常规mysql，阻塞式"""
 
     def __init__(self, host, user, password, database, table):
         self.host = host
@@ -82,7 +82,7 @@ class MysqlPipeline:
 
 
 class AioMysqlPipeline(MysqlPipeline):
-    """ 异步mysql，非阻塞"""
+    """异步mysql，非阻塞"""
 
     def __init__(self, *args):
         super(AioMysqlPipeline, self).__init__(*args)
