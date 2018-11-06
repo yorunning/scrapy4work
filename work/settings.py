@@ -7,7 +7,7 @@ import json
 BOT_NAME = 'work'
 
 SPIDER_MODULES = ['work.spiders']
-NEWSPIDER_MODULE = 'work.spiders'
+NEWSPIDER_MODULE = 'work.spiders.year_2018.month_11.date_6'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36'
@@ -74,7 +74,7 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'work.pipelines.FilterBrandPipeline': 90,
+    # 'work.pipelines.FilterBrandPipeline': 90,
     'work.pipelines.MysqlPipeline': None,
     'work.pipelines.AioMysqlPipeline': None,
 }
